@@ -1,0 +1,64 @@
+SELECT User, Host FROM mysql.user;
+UPDATE mysql.user SET host = '%' WHERE host = 'localhost' AND user = 'root';
+
+
+sudo gedit /etc/mysql/mysql.conf.d/mysqld.cnf
+Under the [mysqld] Locate the Line,
+bind-address            = 127.0.0.1
+And change it to,
+bind-address            = 0.0.0.0
+here you can make sure mysql port
+port=3306
+also check in mysql check for port
+SHOW GLOBAL VARIABLES LIKE 'PORT';
+
+
+systemctl restart mysql.service
+
+
+SELECT User, Host FROM mysql.user;
+show grants for 'root'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+
+
+CREATE USER 'sqoop'@'%' IDENTIFIED BY 'sqoopit';
+GRANT ALL PRIVILEGES ON *.* TO 'sqoop'@'%';
+FLUSH PRIVILEGES;
+
+
+
+To remove mysql completely from your system Just type in terminal
+
+sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-5.7 mysql-client-core-5.7
+sudo rm -rf /etc/mysql /var/lib/mysql
+sudo apt-get autoremove
+sudo apt-get autoclean
+
+
+Install mysql version 5.7 on Ubuntu 16.04
+
+Type the following command:
+sudo apt install mysql-server mysql-client
+sudo mysql_secure_installation
+
+
+mysqldump -h localhost -u root -p university > /home/pratap16/university.sql
+
+http://hadooped.blogspot.com/2013/06/apache-sqoop-part-3-data-transfer.html
+https://developer.ibm.com/hadoop/2017/02/28/typical-scenario-sqoop-incremental-import-merge/
+
+
+mysql -u dev -p university < /home/pratap/mysql_database/DDL.sql
+
+
+MariaDB [(none)]> SHOW VARIABLES LIKE "%version%";
+
+
+
+SELECT * INTO OUTFILE '/tmp/git2.csv'
+    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+    LINES TERMINATED BY '\n'
+FROM git;
+
+select column_name INTO OUTFILE '/tmp/git4.csv' from information_schema.columns where table_name='git'
+

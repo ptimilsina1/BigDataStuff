@@ -1,0 +1,88 @@
+CREATE TABLE IF NOT EXISTS  git2(id int,scrape_time timestamp,Repo string,stars_today int,created_at timestamp,updated_at timestamp,pushed_at timestamp,language string,open_issues_count int,forks int,open_issues int,network_count int,subscribers_count int, stargazers_count int,Contributors string,Contributors_number int,description string) ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '\t'  LINES TERMINATED BY '\n'
+  STORED AS TEXTFILE;
+
+sshfs pratap@10.1.1.19:/home/pratap  /home/pratap16/remotecomp/ -o nonempty
+
+
+hdfs dfs -cp /user/pratap/tmp/git*.avro /user/pratap/github_data && \
+beeline -u "jdbc:hive2://ybolcldrmstr.yotabites.com:10000/default;principal=hive/_HOST@YOTABITES.COM;ssl=true" -e\
+"LOAD DATA INPATH '/user/pratap/tmp/git.avro' INTO TABLE pratapgitrepo.git;"
+
+#To overwrite the data in the table use -
+LOAD DATA INPATH '/home/hadoop/employee.csv' OVERWRITE INTO TABLE Employee;
+
+https://www.cloudera.com/documentation/enterprise/5-7-x/topics/impala_load_data.html
+
+
+hdfs dfs -put git.avro /user/pratap/tmp/
+hdfs dfs -ls /user/pratap/tmp/
+
+beeline -u "jdbc:hive2://ybolcldrmstr.yotabites.com:10000/default;principal=hive/_HOST@YOTABITES.COM;ssl=true"
+
+create database pratapgitrepo location '/user/pratap/warehouse/pratapgitrepo.db';
+
+
+CREATE TABLE git
+ROW FORMAT
+SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+STORED AS
+INPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+TBLPROPERTIES ('avro.schema.literal'='{"namespace": "repo.avro",
+ "type": "record",
+ "name": "Repo",
+ "fields": [
+     {"name": "Contributors", "type": "string"},
+     {"name": "Contributors_number", "type": "int"},
+     {"name": "Repo", "type": "string"},
+     {"name": "created_at", "type": "string"},
+     {"name": "description", "type": "string"},
+     {"name": "forks", "type": "int"},
+     {"name": "id", "type": "int"},
+     {"name": "language", "type": "string"},
+     {"name": "network_count", "type": "int"},
+     {"name": "open_issues", "type": "int"},
+     {"name": "open_issues_count", "type": "int"},
+     {"name": "pushed_at", "type":"string"},
+     {"name": "scrape_time", "type": "string"},
+     {"name": "stargazers_count", "type": "int"},
+     {"name": "stars_today", "type": "int"},
+     {"name": "subscribers_count", "type": "int"},
+     {"name": "updated_at", "type": "string"}
+ ]
+}');
+
+
+LOAD DATA INPATH '/user/pratap/tmp/git.avro' INTO TABLE git;
+!commit
+
+
+beeline -u "jdbc:hive2://ybolcldrmstr.yotabites.com:10000/default;principal=hive/_HOST@YOTABITES.COM;ssl=true" -e "LOAD DATA INPATH '/user/pratap/tmp/git*.avro' INTO TABLE pratapgitrepo.git;"
+
+
+CREATE TABLE git2
+STORED AS AVRO
+TBLPROPERTIES ('avro.schema.url'='hdfs:///user/pratap/git.avsc');
+
+
+recipients="pratap@yotabitesllc.com"
+subject="Top_Trending_Repository_Now"
+* * * * * cd /home/pratap && python3 git_final.py && cd /tmp |cat '/tmp/message.txt'| mail -s $subject $recipients && hdfs dfs -put git*.avro /user/pratap/tmp/ && hdfs dfs -cp /user/pratap/tmp/git*.avro /user/pratap/github_data && beeline -u "jdbc:hive2://ybolcldrmstr.yotabites.com:10000/default;principal=hive/_HOST@YOTABITES.COM;ssl=true" -e "LOAD DATA INPATH '/user/pratap/tmp/git*.avro' INTO TABLE pratapgitrepo.git;"
+                                                           
+
+/var/spool/mail/pratap
+
+Cloudera VM
+* * * * * hdfs dfs -put /home/cloudera/git.avro /user/pratap/tmp && hdfs dfs -cp /user/pratap/tmp/git.avro /user/pratap/github_data && hive -e "LOAD DATA INPATH '/user/pratap/tmp/git.avro' INTO TABLE git.git;"
+
+
+
+https://gist.github.com/saptak/bbe2a32f33f9f536730c
+http://hadooptutorial.info/bucketing-in-hive/
+
+https://github.com/dheeraj0606/Hive_Scripts/blob/master/scripts/hiveql-partitions.q
+https://github.com/SriGovindGutala/Hive/blob/master/HiveQL.txt
+
+
+

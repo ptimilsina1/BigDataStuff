@@ -1,0 +1,32 @@
+http://hadooped.blogspot.com/2013/06/apache-sqoop-part-5-scheduling-sqoop.html
+
+oozie version
+export OOZIE_URL=https://ybolcldrmstr.yotabites.com:11443/oozie
+oozie jobs
+
+oozie job -oozie http://ybolcldrmstr.yotabites.com:11443/oozie -config /home/pratap/oozie_/examples/apps/hive2/job.properties -run
+
+List the recent 5 jobs run:
+oozie jobs -len 5
+
+oozie jobs -filter user=pratap -jobtype coordinator
+oozie jobs -filter user=pratap -jobtype bundle
+oozie jobs -filter user=pratap -jobtype coordinator -len 5
+oozie jobs -filter user=pratap -jobtype bundle -len 5
+
+oozie jobs -filter user=pratap -kill
+oozie jobs -filter user=pratap -kill -jobtype coordinator
+oozie jobs -filter user=pratap -kill -jobtype bundle
+
+oozie job -oozie https://ybolcldrmstr.yotabites.com:11443/oozie -config /home/pratap/oozie_work/hive2/job.properties -run -auth KERBEROS
+
+
+
+
+
+oozie job − oozie http://host_name:8080/oozie --config edgenode_path/job1.properties -D
+
+oozie.wf.application.path=hdfs − //Namenodepath/pathof_coordinator_xml/coordinator.xml -d "2 minute"` -run-d “2minute” will ensure that the coordinator starts only after 2 minutes of when the job was submitted.
+
+
+

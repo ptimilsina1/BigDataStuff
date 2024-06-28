@@ -1,0 +1,132 @@
+https://resources.zaloni.com/blog/kafka-in-action-7-steps-to-real-time-streaming-from-rdbms-to-hadoop
+
+
+sudo vi flume00.conf
+# Name the components on this agent 
+Agent1.sources = netcat-source  
+Agent1.channels = memory-channel
+Agent1.sinks = logger-sink
+
+# Describe/configure Source
+Agent1.sources.netcat-source.type = netcat
+Agent1.sources.netcat-source.bind = localhost
+Agent1.sources.netcat-source.port = 44444
+
+# Describe the sink
+Agent1.sinks.logger-sink.type = logger
+
+# Use a channel which buffers events in memory
+Agent1.channels.memory-channel.type = memory
+Agent1.channels.memory-channel.capacity = 1000
+Agent1.channels.memory-channel.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+Agent1.sources.netcat-source.channels = memory-channel
+Agent1.sinks.logger-sink.channel = memory-channel
+
+
+flume-ng agent --conf /opt/cloudera/parcels/CDH-5.9.3-1.cdh5.9.3.p0.4/lib/flume-ng/conf --conf-file /home/pratap/flume00.conf --name Agent1 -Dflume.root.logger=INFO,console
+curl telnet://localhost:44444
+
+sudo vi /usr/lib/flume-ng/conf/seq_gen.conf
+# Naming the components on the current agent 
+
+SeqGenAgent.sources = SeqSource   
+SeqGenAgent.channels = MemChannel 
+SeqGenAgent.sinks = HDFS 
+ 
+# Describing/Configuring the source 
+SeqGenAgent.sources.SeqSource.type = seq
+  
+# Describing/Configuring the sink
+SeqGenAgent.sinks.HDFS.type = hdfs 
+SeqGenAgent.sinks.HDFS.hdfs.path = hdfs://localhost:9000/user/pratap/flume
+SeqGenAgent.sinks.HDFS.hdfs.filePrefix = log 
+SeqGenAgent.sinks.HDFS.hdfs.rollInterval = 0
+SeqGenAgent.sinks.HDFS.hdfs.rollCount = 10000
+SeqGenAgent.sinks.HDFS.hdfs.fileType = DataStream 
+ 
+# Describing/Configuring the channel 
+SeqGenAgent.channels.MemChannel.type = memory 
+SeqGenAgent.channels.MemChannel.capacity = 1000 
+SeqGenAgent.channels.MemChannel.transactionCapacity = 100 
+ 
+# Binding the source and sink to the channel 
+SeqGenAgent.sources.SeqSource.channels = MemChannel
+SeqGenAgent.sinks.HDFS.channel = MemChannel 
+
+hdfs getconf -confKey fs.defaultFS
+
+flume-ng agent --conf /opt/cloudera/parcels/CDH-5.9.3-1.cdh5.9.3.p0.4/lib/flume-ng/conf --conf-file /home/pratap/seq_gen.conf --name SeqGenAgent -Dflume.root.logger=INFO,console
+
+
+
+Application Settings
+Keep the "Consumer Secret" a secret. This key should never be human-readable in your application.
+Consumer Key (API Key) C0y93qds4vqnfydiRiKezLdSj
+Consumer Secret (API Secret) bIdAhGPSUKxMvu81X21ALquJoopNDqfkUa2gNg5Q445z2pRcps
+Access Level Read and write (modify app permissions)
+Owner pratap1622
+Owner ID 4719990966 
+
+
+Your Access Token
+This access token can be used to make API requests on your own account's behalf. Do not share your access token secret with anyone.
+Access Token 4719990966-M20YiAONKzWulYA4ztuKOOXbWQwbwBIvN2aLeCt
+Access Token Secret n7HPhfeBxcNfhdqWS8ebHL43MOd9om3JzEEylHsCNvWwY
+Access Level Read and write
+Owner pratap1622
+Owner ID 4719990966
+
+flume-ng agent --conf /home/pratap/flume-conf --conf-file /home/pratap/flume-conf/twitter_rp.conf --name TwitterAgent -Dflume.root.logger=INFO,console 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+flume-ng agent --conf /opt/cloudera/parcels/CDH-5.9.3-1.cdh5.9.3.p0.4/lib/flume-ng/conf --conf-file /home/pratap/twitter.conf --name TwitterAgent -Dflume.root.logger=INFO,console 
+
+flume-ng agent -n TwitterAgent -c conf -f /home/pratap/twitter.conf -Dtwitter4j.http.proxyHost=www-proxy.example.com -Dtwitter4j.http.proxyPort=80
+
+
+flume-ng agent --conf /usr/lib/flume-ng/conf --conf-file /usr/lib/flume-ng/conf/Twitter.conf --name TwitterAgent -Dflume.root.logger=DEBUG,console 
+
+
+https://www.cloudera.com/documentation/enterprise/5-5-x/topics/cdh_sg_flume_security.html
+
+
+https://chisqr.wordpress.com/2016/04/26/simple-twitter-sentiment-analytics-using-apache-flume-and-spark-part-1/
+
+
+
+
+
+
+
+http://archive.cloudera.com/cdh/3/flume/UserGuide/index.html#_automatic_failover_chains
+
+https://stackoverflow.com/questions/13845598/how-to-configure-flume-1-x-flume-ng-in-failover-mode
+
+http://grokbase.com/t/flume/user/128hr3hm7z/failover-processor-load-balanced-processor
+
+http://qianshangding.iteye.com/blog/2259395
+
+
+
+
